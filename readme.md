@@ -12,7 +12,6 @@ A comprehensive, accessible search component library built with StencilJS for ba
 
 **Demo Options:**
 - 🌐 [**Live Demo**](https://aravindaart.github.io/smart-search/demo.html) - Interactive online demo
-- 📱 [**CodePen Demo**](https://codepen.io) - Try it in CodePen (coming soon)
 - 💻 **Local Demo:** Download [demo.html](https://raw.githubusercontent.com/aravindaart/smart-search/main/demo.html) and open in your browser
 
 ## ✨ Features

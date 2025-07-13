@@ -1,6 +1,6 @@
 {
   "name": "@aravindaart/smart-search",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Smart Search Web Component Library for Banking Applications",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -45,7 +45,11 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "generate": "stencil generate",
-    "prepublishOnly": "npm run build && npm run lint && npm test"
+    "prepublishOnly": "npm run build && npm run lint && npm test",
+    "version:patch": "node scripts/version-bump.cjs patch",
+    "version:minor": "node scripts/version-bump.cjs minor",
+    "version:major": "node scripts/version-bump.cjs major",
+    "test-count": "node scripts/get-test-count.cjs"
   },
   "keywords": [
     "stencil",

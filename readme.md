@@ -62,36 +62,55 @@ npm install @aravindaart/smart-search
 #### React
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { applyPolyfills, defineCustomElements } from '@aravindaart/smart-search/loader';
-
-// Register custom elements
-applyPolyfills().then(() => {
-  defineCustomElements();
-});
+import React, { useState, useEffect, useRef } from 'react';
+import { defineCustomElements } from '@aravindaart/smart-search/loader';
 
 function App() {
+  const searchRef = useRef<any>(null);
   const [searchData] = useState([
     { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
     { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
   ]);
 
-  const handleSearch = (event: any) => {
-    console.log('Search query:', event.detail.query);
-  };
+  useEffect(() => {
+    // Register custom elements
+    defineCustomElements();
+    
+    // Set data source after component is registered
+    if (searchRef.current) {
+      searchRef.current.dataSource = searchData;
+    }
+  }, [searchData]);
 
-  const handleSelect = (event: any) => {
-    console.log('Selected:', event.detail.result);
-  };
+  useEffect(() => {
+    const searchElement = searchRef.current;
+    if (!searchElement) return;
+
+    const handleSearch = (event: CustomEvent) => {
+      console.log('Search query:', event.detail.query);
+    };
+
+    const handleSelect = (event: CustomEvent) => {
+      console.log('Selected:', event.detail.result);
+    };
+
+    // Add event listeners
+    searchElement.addEventListener('searchInput', handleSearch);
+    searchElement.addEventListener('resultSelect', handleSelect);
+
+    // Cleanup
+    return () => {
+      searchElement.removeEventListener('searchInput', handleSearch);
+      searchElement.removeEventListener('resultSelect', handleSelect);
+    };
+  }, []);
 
   return (
     <smart-search
+      ref={searchRef}
       placeholder="Search accounts, transactions..."
-      data-source={JSON.stringify(searchData)}
-      onSearchInput={handleSearch}
-      onResultSelect={handleSelect}
       theme="light"
-      max-results={10}
+      maxResults={10}
     />
   );
 }
@@ -114,40 +133,47 @@ import { AppComponent } from './app.component';
 export class AppModule {}
 
 // app.component.ts
-import { Component, OnInit } from '@angular/core';
-import { applyPolyfills, defineCustomElements } from '@aravindaart/smart-search/loader';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { defineCustomElements } from '@aravindaart/smart-search/loader';
 
 @Component({
   selector: 'app-root',
   template: `
     <smart-search
-      [attr.data-source]="searchDataString"
+      #searchElement
       placeholder="Search accounts, transactions..."
       theme="light"
-      (searchInput)="onSearch($event)"
-      (resultSelect)="onSelect($event)">
+      [maxResults]="10">
     </smart-search>
   `
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild('searchElement', { static: false }) searchElement!: ElementRef;
+
   searchData = [
     { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
     { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
   ];
 
-  searchDataString = JSON.stringify(this.searchData);
-
   async ngOnInit() {
-    await applyPolyfills();
-    defineCustomElements();
+    // Register custom elements
+    await defineCustomElements();
   }
 
-  onSearch(event: any) {
-    console.log('Search query:', event.detail.query);
-  }
+  ngAfterViewInit() {
+    // Set data source after view init
+    if (this.searchElement?.nativeElement) {
+      this.searchElement.nativeElement.dataSource = this.searchData;
+      
+      // Add event listeners
+      this.searchElement.nativeElement.addEventListener('searchInput', (event: CustomEvent) => {
+        console.log('Search query:', event.detail.query);
+      });
 
-  onSelect(event: any) {
-    console.log('Selected:', event.detail.result);
+      this.searchElement.nativeElement.addEventListener('resultSelect', (event: CustomEvent) => {
+        console.log('Selected:', event.detail.result);
+      });
+    }
   }
 }
 ```
@@ -157,38 +183,45 @@ export class AppComponent implements OnInit {
 ```vue
 <template>
   <smart-search
-    :data-source="searchDataString"
+    ref="searchElement"
     placeholder="Search accounts, transactions..."
     theme="light"
-    @searchInput="onSearch"
-    @resultSelect="onSelect"
+    :maxResults="10"
   />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { applyPolyfills, defineCustomElements } from '@aravindaart/smart-search/loader';
+import { ref, onMounted, nextTick } from 'vue';
+import { defineCustomElements } from '@aravindaart/smart-search/loader';
 
-// Register custom elements
-onMounted(async () => {
-  await applyPolyfills();
-  defineCustomElements();
-});
+const searchElement = ref<any>(null);
 
 const searchData = ref([
   { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
   { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
 ]);
 
-const searchDataString = computed(() => JSON.stringify(searchData.value));
+onMounted(async () => {
+  // Register custom elements
+  await defineCustomElements();
+  
+  // Wait for next tick to ensure element is rendered
+  await nextTick();
+  
+  if (searchElement.value) {
+    // Set data source
+    searchElement.value.dataSource = searchData.value;
+    
+    // Add event listeners
+    searchElement.value.addEventListener('searchInput', (event: CustomEvent) => {
+      console.log('Search query:', event.detail.query);
+    });
 
-const onSearch = (event: any) => {
-  console.log('Search query:', event.detail.query);
-};
-
-const onSelect = (event: any) => {
-  console.log('Selected:', event.detail.result);
-};
+    searchElement.value.addEventListener('resultSelect', (event: CustomEvent) => {
+      console.log('Selected:', event.detail.result);
+    });
+  }
+});
 </script>
 ```
 
@@ -196,39 +229,80 @@ const onSelect = (event: any) => {
 
 ```svelte
 <script lang="ts">
-  import { applyPolyfills, defineCustomElements } from '@aravindaart/smart-search/loader';
+  import { defineCustomElements } from '@aravindaart/smart-search/loader';
   import { onMount } from 'svelte';
 
-  // Register custom elements
-  onMount(async () => {
-    await applyPolyfills();
-    defineCustomElements();
-  });
+  let searchElement: any;
 
   const searchData = [
     { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
     { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
   ];
 
-  $: searchDataString = JSON.stringify(searchData);
+  onMount(async () => {
+    // Register custom elements
+    await defineCustomElements();
 
-  function handleSearch(event) {
-    console.log('Search query:', event.detail.query);
-  }
+    if (searchElement) {
+      // Set data source
+      searchElement.dataSource = searchData;
+      
+      // Add event listeners
+      searchElement.addEventListener('searchInput', (event: CustomEvent) => {
+        console.log('Search query:', event.detail.query);
+      });
 
-  function handleSelect(event) {
-    console.log('Selected:', event.detail.result);
-  }
+      searchElement.addEventListener('resultSelect', (event: CustomEvent) => {
+        console.log('Selected:', event.detail.result);
+      });
+    }
+  });
 </script>
 
 <smart-search
-  data-source={searchDataString}
+  bind:this={searchElement}
   placeholder="Search accounts, transactions..."
   theme="light"
-  on:searchInput={handleSearch}
-  on:resultSelect={handleSelect}
+  maxResults={10}
 />
 ```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### React: Component not rendering
+- **Issue**: `<smart-search>` doesn't appear
+- **Solution**: Ensure `defineCustomElements()` is called before rendering
+- **Check**: Add `ref` and set `dataSource` programmatically
+
+#### Angular: Property binding errors  
+- **Issue**: `Can't bind to 'dataSource'`
+- **Solution**: Set properties programmatically in `ngAfterViewInit()`
+- **Check**: Use `CUSTOM_ELEMENTS_SCHEMA` in your module
+
+#### Vue: Events not firing
+- **Issue**: `@searchInput` not working
+- **Solution**: Use `addEventListener` instead of Vue event binding
+- **Check**: Register elements in `onMounted()`
+
+#### TypeScript Errors
+- **Issue**: `Property 'dataSource' does not exist`
+- **Solution**: 
+```typescript
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'smart-search': any;
+    }
+  }
+}
+```
+
+#### Data not showing
+- **Issue**: Search results not appearing
+- **Solution**: Ensure `dataSource` is set after component registration
+- **Check**: Data format matches `SearchResult[]` interface
 
 ## 📚 API Documentation
 

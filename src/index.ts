@@ -1,12 +1,21 @@
 /**
- * @fileoverview entry point for your component library
+ * @fileoverview Smart Search Component Library
  *
- * This is the entry point for your component library. Use this file to export utilities,
- * constants or data structure that accompany your components.
- *
- * DO NOT use this file to export your components. Instead, use the recommended approaches
- * to consume components of this package as outlined in the `README.md`.
+ * A comprehensive search component library for banking applications.
+ * Supports React, Angular, Vue, and Svelte with tree shaking.
  */
 
+// Export types for TypeScript support
+export * from './types';
+
+// Export utility functions
+export * from './utils/search';
 export { format } from './utils/utils';
+
+// Export TypeScript definitions
 export type * from './components.d.ts';
+
+// Export individual components for tree shaking support
+export { SmartSearch } from './components/smart-search/smart-search';
+export { SmartSearchInput } from './components/smart-search-input/smart-search-input';
+export { SmartSearchResults } from './components/smart-search-results/smart-search-results';

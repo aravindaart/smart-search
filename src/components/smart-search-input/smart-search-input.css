@@ -1,0 +1,234 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  font-family: var(--search-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--search-background, #ffffff);
+  border: 1px solid var(--search-border-color, #e0e0e0);
+  border-radius: var(--search-border-radius, 4px);
+  transition: var(--search-transition, all 0.2s ease-in-out);
+  box-shadow: var(--search-box-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--search-focus-color, #0056b3);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  width: 20px;
+  height: 20px;
+  fill: var(--search-placeholder-color, #888888);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 48px 12px 44px;
+  border: none;
+  background: transparent;
+  font-size: var(--search-font-size, 14px);
+  line-height: var(--search-line-height, 1.5);
+  color: var(--search-text-color, #333333);
+  outline: none;
+  border-radius: inherit;
+}
+
+.search-input::placeholder {
+  color: var(--search-placeholder-color, #888888);
+}
+
+.search-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.search-input--loading {
+  padding-right: 44px;
+}
+
+.search-input--loading.search-input {
+  padding-right: 92px; /* Account for both loading and clear button */
+}
+
+.loading-spinner {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  color: var(--search-primary-color, #007bff);
+}
+
+.clear-button {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: var(--search-transition, all 0.2s ease-in-out);
+  color: var(--search-text-color, #666666);
+  opacity: 0.8;
+}
+
+.clear-button:hover {
+  background: var(--search-hover-color, #f8f9fa);
+  color: var(--search-text-color, #333333);
+  opacity: 1;
+}
+
+.clear-button:focus {
+  outline: 2px solid var(--search-focus-color, #0056b3);
+  outline-offset: 2px;
+}
+
+.clear-button .clear-icon {
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+.search-input--loading + .clear-button {
+  right: 48px; /* Move clear button left when loading */
+}
+
+/* Dark theme adjustments */
+:host([data-theme="dark"]) {
+  --search-primary-color: #4dabf7;
+  --search-background: #333333;
+  --search-border-color: #555555;
+  --search-text-color: #ffffff;
+  --search-placeholder-color: #999999;
+  --search-focus-color: #4dabf7;
+  --search-hover-color: #444444;
+  --search-box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+:host([data-theme="dark"]) .search-input-wrapper {
+  background: var(--search-background);
+  border-color: var(--search-border-color);
+}
+
+:host([data-theme="dark"]) .search-input {
+  color: var(--search-text-color);
+}
+
+:host([data-theme="dark"]) .search-input::placeholder {
+  color: var(--search-placeholder-color);
+}
+
+:host([data-theme="dark"]) .search-icon {
+  fill: var(--search-placeholder-color);
+}
+
+:host([data-theme="dark"]) .clear-button {
+  color: var(--search-placeholder-color);
+}
+
+:host([data-theme="dark"]) .clear-button:hover {
+  background: var(--search-hover-color);
+  color: var(--search-text-color);
+}
+
+:host([data-theme="dark"]) .search-input-wrapper:focus-within {
+  border-color: var(--search-focus-color);
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.25);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .search-input-wrapper {
+    border-width: 2px;
+  }
+  
+  .search-input-wrapper:focus-within {
+    border-width: 3px;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .search-input {
+    padding: 14px 48px 14px 44px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .clear-button {
+    width: 32px;
+    height: 32px;
+    right: 8px;
+  }
+  
+  .clear-button .clear-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .loading-spinner {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .search-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Touch targets for accessibility */
+@media (pointer: coarse) {
+  .clear-button {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .search-input {
+    padding-right: 52px;
+  }
+  
+  .search-input--loading + .clear-button {
+    right: 44px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .search-input-wrapper,
+  .clear-button,
+  .spinner {
+    transition: none;
+  }
+  
+  .spinner animate {
+    animation-duration: 0s;
+  }
+}

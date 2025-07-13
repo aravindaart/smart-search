@@ -5,57 +5,407 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { FilterMode, SearchInputEventDetail, SearchResult, SearchSelectEventDetail, Theme } from "./types";
+export { FilterMode, SearchInputEventDetail, SearchResult, SearchSelectEventDetail, Theme } from "./types";
 export namespace Components {
-    interface MyComponent {
+    interface SmartSearch {
         /**
-          * The first name
+          * @default false
          */
-        "first": string;
+        "autoFocus": boolean;
         /**
-          * The last name
+          * @default false
          */
-        "last": string;
+        "caseSensitive": boolean;
         /**
-          * The middle name
+          * @default true
          */
-        "middle": string;
+        "clearable": boolean;
+        /**
+          * @default []
+         */
+        "dataSource": SearchResult[] | string;
+        /**
+          * @default 300
+         */
+        "debounceTime": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'contains'
+         */
+        "filterMode": FilterMode;
+        /**
+          * @default ''
+         */
+        "groupBy": string;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 10
+         */
+        "maxResults": number;
+        /**
+          * @default 2
+         */
+        "minSearchLength": number;
+        /**
+          * @default 'No results found'
+         */
+        "noResultsMessage": string;
+        /**
+          * @default 'Search...'
+         */
+        "placeholder": string;
+        /**
+          * @default ['title', 'subtitle', 'description']
+         */
+        "searchFields": string[];
+        /**
+          * @default 'light'
+         */
+        "theme": Theme;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SmartSearchInput {
+        /**
+          * @default false
+         */
+        "autoFocus": boolean;
+        /**
+          * @default true
+         */
+        "clearable": boolean;
+        /**
+          * @default 300
+         */
+        "debounceTime": number;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 100
+         */
+        "maxLength": number;
+        /**
+          * @default 2
+         */
+        "minSearchLength": number;
+        /**
+          * @default 'Search...'
+         */
+        "placeholder": string;
+        /**
+          * @default 'light'
+         */
+        "theme": Theme;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface SmartSearchResults {
+        /**
+          * @default ''
+         */
+        "groupBy": string;
+        /**
+          * @default ''
+         */
+        "highlightTerm": string;
+        /**
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * @default 10
+         */
+        "maxResults": number;
+        /**
+          * @default 'No results found'
+         */
+        "noResultsMessage": string;
+        /**
+          * @default []
+         */
+        "results": SearchResult[];
+        /**
+          * @default 'light'
+         */
+        "theme": Theme;
+        /**
+          * @default false
+         */
+        "virtualScrolling": boolean;
+        /**
+          * @default false
+         */
+        "visible": boolean;
     }
 }
+export interface SmartSearchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSmartSearchElement;
+}
+export interface SmartSearchInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSmartSearchInputElement;
+}
+export interface SmartSearchResultsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSmartSearchResultsElement;
+}
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLSmartSearchElementEventMap {
+        "searchInput": SearchInputEventDetail;
+        "searchClear": void;
+        "searchFocus": FocusEvent;
+        "searchBlur": FocusEvent;
+        "resultSelect": SearchSelectEventDetail;
+        "resultHover": SearchSelectEventDetail;
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    interface HTMLSmartSearchElement extends Components.SmartSearch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSmartSearchElementEventMap>(type: K, listener: (this: HTMLSmartSearchElement, ev: SmartSearchCustomEvent<HTMLSmartSearchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSmartSearchElementEventMap>(type: K, listener: (this: HTMLSmartSearchElement, ev: SmartSearchCustomEvent<HTMLSmartSearchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSmartSearchElement: {
+        prototype: HTMLSmartSearchElement;
+        new (): HTMLSmartSearchElement;
+    };
+    interface HTMLSmartSearchInputElementEventMap {
+        "searchInput": SearchInputEventDetail;
+        "searchClear": void;
+        "searchFocus": FocusEvent;
+        "searchBlur": FocusEvent;
+    }
+    interface HTMLSmartSearchInputElement extends Components.SmartSearchInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSmartSearchInputElementEventMap>(type: K, listener: (this: HTMLSmartSearchInputElement, ev: SmartSearchInputCustomEvent<HTMLSmartSearchInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSmartSearchInputElementEventMap>(type: K, listener: (this: HTMLSmartSearchInputElement, ev: SmartSearchInputCustomEvent<HTMLSmartSearchInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSmartSearchInputElement: {
+        prototype: HTMLSmartSearchInputElement;
+        new (): HTMLSmartSearchInputElement;
+    };
+    interface HTMLSmartSearchResultsElementEventMap {
+        "resultSelect": SearchSelectEventDetail;
+        "resultHover": SearchSelectEventDetail;
+    }
+    interface HTMLSmartSearchResultsElement extends Components.SmartSearchResults, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSmartSearchResultsElementEventMap>(type: K, listener: (this: HTMLSmartSearchResultsElement, ev: SmartSearchResultsCustomEvent<HTMLSmartSearchResultsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSmartSearchResultsElementEventMap>(type: K, listener: (this: HTMLSmartSearchResultsElement, ev: SmartSearchResultsCustomEvent<HTMLSmartSearchResultsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSmartSearchResultsElement: {
+        prototype: HTMLSmartSearchResultsElement;
+        new (): HTMLSmartSearchResultsElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "smart-search": HTMLSmartSearchElement;
+        "smart-search-input": HTMLSmartSearchInputElement;
+        "smart-search-results": HTMLSmartSearchResultsElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface SmartSearch {
         /**
-          * The first name
+          * @default false
          */
-        "first"?: string;
+        "autoFocus"?: boolean;
         /**
-          * The last name
+          * @default false
          */
-        "last"?: string;
+        "caseSensitive"?: boolean;
         /**
-          * The middle name
+          * @default true
          */
-        "middle"?: string;
+        "clearable"?: boolean;
+        /**
+          * @default []
+         */
+        "dataSource"?: SearchResult[] | string;
+        /**
+          * @default 300
+         */
+        "debounceTime"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default 'contains'
+         */
+        "filterMode"?: FilterMode;
+        /**
+          * @default ''
+         */
+        "groupBy"?: string;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 10
+         */
+        "maxResults"?: number;
+        /**
+          * @default 2
+         */
+        "minSearchLength"?: number;
+        /**
+          * @default 'No results found'
+         */
+        "noResultsMessage"?: string;
+        "onResultHover"?: (event: SmartSearchCustomEvent<SearchSelectEventDetail>) => void;
+        "onResultSelect"?: (event: SmartSearchCustomEvent<SearchSelectEventDetail>) => void;
+        "onSearchBlur"?: (event: SmartSearchCustomEvent<FocusEvent>) => void;
+        "onSearchClear"?: (event: SmartSearchCustomEvent<void>) => void;
+        "onSearchFocus"?: (event: SmartSearchCustomEvent<FocusEvent>) => void;
+        "onSearchInput"?: (event: SmartSearchCustomEvent<SearchInputEventDetail>) => void;
+        /**
+          * @default 'Search...'
+         */
+        "placeholder"?: string;
+        /**
+          * @default ['title', 'subtitle', 'description']
+         */
+        "searchFields"?: string[];
+        /**
+          * @default 'light'
+         */
+        "theme"?: Theme;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SmartSearchInput {
+        /**
+          * @default false
+         */
+        "autoFocus"?: boolean;
+        /**
+          * @default true
+         */
+        "clearable"?: boolean;
+        /**
+          * @default 300
+         */
+        "debounceTime"?: number;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 100
+         */
+        "maxLength"?: number;
+        /**
+          * @default 2
+         */
+        "minSearchLength"?: number;
+        "onSearchBlur"?: (event: SmartSearchInputCustomEvent<FocusEvent>) => void;
+        "onSearchClear"?: (event: SmartSearchInputCustomEvent<void>) => void;
+        "onSearchFocus"?: (event: SmartSearchInputCustomEvent<FocusEvent>) => void;
+        "onSearchInput"?: (event: SmartSearchInputCustomEvent<SearchInputEventDetail>) => void;
+        /**
+          * @default 'Search...'
+         */
+        "placeholder"?: string;
+        /**
+          * @default 'light'
+         */
+        "theme"?: Theme;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface SmartSearchResults {
+        /**
+          * @default ''
+         */
+        "groupBy"?: string;
+        /**
+          * @default ''
+         */
+        "highlightTerm"?: string;
+        /**
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * @default 10
+         */
+        "maxResults"?: number;
+        /**
+          * @default 'No results found'
+         */
+        "noResultsMessage"?: string;
+        "onResultHover"?: (event: SmartSearchResultsCustomEvent<SearchSelectEventDetail>) => void;
+        "onResultSelect"?: (event: SmartSearchResultsCustomEvent<SearchSelectEventDetail>) => void;
+        /**
+          * @default []
+         */
+        "results"?: SearchResult[];
+        /**
+          * @default 'light'
+         */
+        "theme"?: Theme;
+        /**
+          * @default false
+         */
+        "virtualScrolling"?: boolean;
+        /**
+          * @default false
+         */
+        "visible"?: boolean;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "smart-search": SmartSearch;
+        "smart-search-input": SmartSearchInput;
+        "smart-search-results": SmartSearchResults;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "smart-search": LocalJSX.SmartSearch & JSXBase.HTMLAttributes<HTMLSmartSearchElement>;
+            "smart-search-input": LocalJSX.SmartSearchInput & JSXBase.HTMLAttributes<HTMLSmartSearchInputElement>;
+            "smart-search-results": LocalJSX.SmartSearchResults & JSXBase.HTMLAttributes<HTMLSmartSearchResultsElement>;
         }
     }
 }

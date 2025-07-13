@@ -1,0 +1,78 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  font-family: var(--search-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.smart-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.smart-search-container--open {
+  /* Add any styles for open state if needed */
+}
+
+.smart-search-container--loading {
+  /* Add any styles for loading state if needed */
+}
+
+/* Ensure proper stacking context */
+smart-search-input {
+  position: relative;
+  z-index: 2;
+}
+
+smart-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+/* Dark theme support */
+:host([data-theme="dark"]) {
+  --search-primary-color: #4dabf7;
+  --search-background: #333333;
+  --search-border-color: #555555;
+  --search-text-color: #ffffff;
+  --search-placeholder-color: #999999;
+  --search-focus-color: #4dabf7;
+  --search-hover-color: #444444;
+  --search-box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .smart-search-container {
+    /* Mobile specific styles */
+  }
+  
+  smart-search-results {
+    /* Adjust positioning for mobile if needed */
+    left: -4px;
+    right: -4px;
+  }
+}
+
+/* Focus management */
+.smart-search-container:focus-within smart-search-results {
+  /* Ensure results are visible when focused */
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .smart-search-container {
+    /* High contrast adjustments */
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .smart-search-container * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

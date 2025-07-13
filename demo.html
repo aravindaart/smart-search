@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Search Components - Standalone Demo</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            .demo-container {
+                border-radius: 8px;
+                margin: 0;
+            }
+        }
+        .header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 30px 20px;
+            overflow: visible;
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 15px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .header p {
+                font-size: 1em;
+            }
+            .content {
+                padding: 20px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px 10px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .content {
+                padding: 15px 10px;
+            }
+        }
+        .demo-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #007bff;
+            position: relative;
+            overflow: visible;
+        }
+        .demo-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.3em;
+        }
+        .demo-section p {
+            margin: 0 0 20px 0;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-section {
+                margin: 20px 0;
+                padding: 20px 15px;
+                border-radius: 8px;
+                isolation: isolate;
+            }
+            .demo-section h3 {
+                font-size: 1.2em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .demo-section {
+                margin: 15px 0;
+                padding: 15px 10px;
+                isolation: isolate;
+                transform: translateZ(0);
+            }
+            .demo-section h3 {
+                font-size: 1.1em;
+            }
+            .demo-section p {
+                font-size: 0.9em;
+            }
+        }
+        
+        /* Specific override for search demo section to allow dropdown overflow */
+        .demo-section:has(.mock-search-container) {
+            overflow: visible !important;
+            z-index: 1;
+        }
+        
+        /* Fallback for browsers that don't support :has() */
+        .demo-section:first-of-type {
+            overflow: visible !important;
+            z-index: 1;
+        }
+        
+        /* Mock Smart Search Component Styles */
+        .mock-search-container {
+            position: relative;
+            width: 100%;
+            margin: 20px 0;
+            z-index: 2;
+        }
+        
+        .mock-search-input {
+            width: 100%;
+            padding: 12px 48px 12px 44px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        
+        .mock-search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .mock-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            opacity: 0.5;
+        }
+        
+        .mock-clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: all 0.2s;
+            color: #666666;
+        }
+        
+        .mock-clear-btn:hover {
+            background: #f0f0f0;
+            opacity: 1;
+        }
+        
+        .mock-clear-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .mock-results {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .mock-results {
+                max-height: 250px;
+                left: 0;
+                right: 0;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+                z-index: 50;
+            }
+            
+            .mock-clear-btn {
+                width: 32px;
+                height: 32px;
+                right: 8px;
+            }
+            
+            .mock-clear-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .mock-results {
+                max-height: 200px;
+                left: 0;
+                right: 0;
+                border-radius: 4px;
+                z-index: 10;
+            }
+        }
+        
+        .mock-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .mock-result-item:hover,
+        .mock-result-item.active {
+            background: #f8f9fa;
+        }
+        
+        .mock-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .mock-result-title {
+            font-weight: 500;
+            color: #333;
+            margin: 0 0 4px 0;
+            font-size: 14px;
+        }
+        
+        .mock-result-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin: 0 0 4px 0;
+        }
+        
+        .mock-result-description {
+            font-size: 12px;
+            color: #888;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .mock-result-item {
+                padding: 10px 14px;
+            }
+            .mock-result-title {
+                font-size: 13px;
+            }
+            .mock-result-subtitle,
+            .mock-result-description {
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .mock-result-item {
+                padding: 8px 12px;
+            }
+            .mock-result-title {
+                font-size: 12px;
+            }
+            .mock-result-subtitle,
+            .mock-result-description {
+                font-size: 10px;
+            }
+        }
+        
+        .mock-result-category {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(0,123,255,0.1);
+            color: #007bff;
+            font-size: 10px;
+            border-radius: 12px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .highlight {
+            background: #007bff;
+            color: white;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .instructions h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        
+        .instructions ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+            color: #856404;
+        }
+        
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .instructions {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            .instructions h4 {
+                font-size: 1em;
+            }
+            .instructions li {
+                font-size: 0.9em;
+                margin: 6px 0;
+            }
+            .status {
+                padding: 12px;
+                margin: 15px 0;
+                font-size: 0.9em;
+            }
+            .controls {
+                gap: 8px;
+                margin: 15px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .instructions {
+                padding: 12px;
+            }
+            .instructions ul {
+                padding-left: 15px;
+            }
+            .instructions li {
+                font-size: 0.85em;
+            }
+            .status {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+            .controls {
+                gap: 5px;
+            }
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                min-width: 100px;
+            }
+            
+            .theme-toggle {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                min-width: 120px;
+                gap: 6px;
+            }
+        }
+        
+        .btn:hover, .btn.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.2);
+        }
+        
+        .theme-toggle.dark-active {
+            background: #2c3e50;
+            color: #ffffff;
+            border-color: #4dabf7;
+        }
+        
+        .theme-toggle.dark-active:hover {
+            background: #34495e;
+            box-shadow: 0 4px 8px rgba(77, 171, 247, 0.3);
+        }
+        
+        .toggle-icon {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-text {
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle.dark-active .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin: 15px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .config-grid {
+                gap: 12px;
+                margin: 12px 0;
+            }
+        }
+        
+        .config-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .config-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+        
+        .select-trigger {
+            width: 100%;
+            padding: 8px 30px 8px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        
+        .select-trigger::after {
+            content: '▼';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #666;
+            transition: transform 0.2s;
+        }
+        
+        .custom-select.open .select-trigger::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        .select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .custom-select.open {
+            z-index: 50;
+        }
+        
+        .custom-select.open .select-options {
+            display: block;
+            z-index: 51;
+        }
+        
+        .select-option {
+            padding: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+        
+        .select-option:hover {
+            background: #f0f0f0;
+        }
+        
+        .select-option.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .select-option.active:hover {
+            background: #0056b3;
+        }
+        
+        .config-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .config-label {
+                font-size: 13px;
+            }
+            .config-select {
+                padding: 7px;
+                font-size: 13px;
+            }
+            .checkbox-label {
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .config-label {
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+            .config-select {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .checkbox-label {
+                font-size: 12px;
+            }
+            .config-checkboxes {
+                gap: 6px;
+            }
+        }
+        
+        /* Dark theme */
+        .dark-theme {
+            background: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .content {
+            background: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .demo-section {
+            background: #2a2a2a !important;
+            border-left-color: #4dabf7 !important;
+        }
+        
+        .dark-theme .demo-section h3 {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .demo-section p {
+            color: #cccccc !important;
+        }
+        
+        .dark-theme .mock-search-input {
+            background: #333333 !important;
+            border-color: #555555 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .mock-search-input::placeholder {
+            color: #999999 !important;
+        }
+        
+        .dark-theme .mock-search-input:focus {
+            border-color: #4dabf7 !important;
+            box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.25) !important;
+        }
+        
+        .dark-theme .mock-search-icon {
+            color: #999999 !important;
+        }
+        
+        .dark-theme .mock-clear-btn {
+            color: #cccccc !important;
+        }
+        
+        .dark-theme .mock-clear-btn:hover {
+            background: #444444 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .mock-results {
+            background: #333333 !important;
+            border-color: #555555 !important;
+        }
+        
+        .dark-theme .mock-result-item {
+            border-bottom-color: #444444 !important;
+        }
+        
+        .dark-theme .mock-result-item:hover,
+        .dark-theme .mock-result-item.active {
+            background: #444444 !important;
+        }
+        
+        .dark-theme .mock-result-title {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .mock-result-subtitle {
+            color: #cccccc !important;
+        }
+        
+        .dark-theme .mock-result-description {
+            color: #999999 !important;
+        }
+        
+        .dark-theme .mock-result-category {
+            background: rgba(77, 171, 247, 0.2) !important;
+            color: #4dabf7 !important;
+        }
+        
+        .dark-theme .highlight {
+            background: #4dabf7 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme #input-events {
+            background: #333333 !important;
+            color: #ffffff !important;
+            border: 1px solid #555555 !important;
+        }
+        
+        .dark-theme .status {
+            background: #2d4739 !important;
+            border-color: #3e5a47 !important;
+            color: #7bc393 !important;
+        }
+        
+        .dark-theme .instructions {
+            background: #3d3420 !important;
+            border-color: #5a4d2f !important;
+        }
+        
+        .dark-theme .instructions h4 {
+            color: #e6c068 !important;
+        }
+        
+        .dark-theme .instructions ul li {
+            color: #e6c068 !important;
+        }
+        
+        .dark-theme .btn {
+            background: #333333 !important;
+            border-color: #4dabf7 !important;
+            color: #4dabf7 !important;
+        }
+        
+        .dark-theme .btn:hover, 
+        .dark-theme .btn.active {
+            background: #4dabf7 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme select,
+        .dark-theme .config-select {
+            background: #333333 !important;
+            color: #ffffff !important;
+            border-color: #555555 !important;
+        }
+        
+        .dark-theme select option,
+        .dark-theme .config-select option {
+            background: #333333 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .select-trigger {
+            background: #333333 !important;
+            color: #ffffff !important;
+            border-color: #555555 !important;
+        }
+        
+        .dark-theme .select-trigger::after {
+            color: #cccccc !important;
+        }
+        
+        .dark-theme .select-options {
+            background: #333333 !important;
+            border-color: #555555 !important;
+        }
+        
+        .dark-theme .select-option {
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .select-option:hover {
+            background: #444444 !important;
+        }
+        
+        .dark-theme .select-option.active {
+            background: #4dabf7 !important;
+            color: #ffffff !important;
+        }
+        
+        .dark-theme .select-option.active:hover {
+            background: #339af0 !important;
+        }
+        
+        .dark-theme input[type="checkbox"] {
+            accent-color: #4dabf7 !important;
+        }
+        
+        .dark-theme label,
+        .dark-theme .config-label,
+        .dark-theme .checkbox-label {
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header">
+            <h1>🔍 Smart Search Components</h1>
+            <p>Banking-focused search library with tree shaking support</p>
+        </div>
+        
+        <div class="content">
+            <div class="status">
+                ✅ <strong>Mock Components Loaded!</strong> This demo shows how the actual components look and behave.
+            </div>
+
+            <div class="instructions">
+                <h4>🚀 Try These Interactive Features:</h4>
+                <ul>
+                    <li><strong>Search Demo:</strong> Type "checking", "amazon", or "john" to see dropdown results with keyboard navigation</li>
+                    <li><strong>Configuration Controls:</strong> Adjust max results, debounce timing, placeholder text, and feature toggles to see real-time changes</li>
+                    <li><strong>Keyboard navigation:</strong> Use ↑↓ arrow keys in dropdown, Enter to select, Escape to close</li>
+                    <li><strong>Theme switching:</strong> Toggle between light and dark themes to see component styling</li>
+                    <li><strong>Feature testing:</strong> Enable/disable clear button and text highlighting to test different configurations</li>
+                </ul>
+            </div>
+
+            <div class="controls">
+                <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+                    <span class="toggle-icon">🌙</span>
+                    <span class="toggle-text">Dark Mode</span>
+                </button>
+            </div>
+
+            <div class="demo-section">
+                <h3>💼 Banking Search Component</h3>
+                <p>Complete search with accounts, transactions, and customer data:</p>
+                <div class="mock-search-container">
+                    <svg class="mock-search-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input 
+                        type="text" 
+                        class="mock-search-input" 
+                        id="main-search"
+                        placeholder="Search accounts, transactions, customers..."
+                        autocomplete="off"
+                    >
+                    <button class="mock-clear-btn" id="clear-btn" onclick="clearSearch()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                    <div class="mock-results" id="results-dropdown"></div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>⚙️ Interactive Search Configuration</h3>
+                <p>Customize the search behavior and see changes in real-time:</p>
+                
+                <div class="config-grid">
+                    <div>
+                        <label class="config-label">Max Results:</label>
+                        <div class="custom-select" data-select="max-results">
+                            <div class="select-trigger">8 results</div>
+                            <div class="select-options">
+                                <div class="select-option" data-value="3">3 results</div>
+                                <div class="select-option" data-value="5">5 results</div>
+                                <div class="select-option active" data-value="8">8 results</div>
+                                <div class="select-option" data-value="12">12 results</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="config-label">Debounce Time:</label>
+                        <div class="custom-select" data-select="debounce">
+                            <div class="select-trigger">Normal (300ms)</div>
+                            <div class="select-options">
+                                <div class="select-option" data-value="0">No delay (0ms)</div>
+                                <div class="select-option" data-value="150">Fast (150ms)</div>
+                                <div class="select-option active" data-value="300">Normal (300ms)</div>
+                                <div class="select-option" data-value="500">Slow (500ms)</div>
+                                <div class="select-option" data-value="1000">Very slow (1000ms)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="config-label">Placeholder Text:</label>
+                        <div class="custom-select" data-select="placeholder">
+                            <div class="select-trigger">Banking (default)</div>
+                            <div class="select-options">
+                                <div class="select-option active" data-value="Search accounts, transactions, customers...">Banking (default)</div>
+                                <div class="select-option" data-value="Search products, orders, customers...">E-commerce</div>
+                                <div class="select-option" data-value="Search files, folders, documents...">File manager</div>
+                                <div class="select-option" data-value="Search users, groups, permissions...">Admin panel</div>
+                                <div class="select-option" data-value="What are you looking for?">Simple</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="config-label">Features:</label>
+                        <div class="config-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="clearable-checkbox" checked>
+                                Show clear button
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="highlight-checkbox" checked>
+                                Highlight matches
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; border: 1px solid #2196f3; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <span style="font-weight: bold; color: #1976d2;">⚡ Live Settings:</span>
+                    </div>
+                    <div id="settings-display" style="font-family: monospace; font-size: 12px; color: #1976d2;">
+                        Max Results: 8 | Debounce: 300ms | Clearable: ✓ | Highlight: ✓
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample banking data
+        const bankingData = [
+            {
+                id: 'acc_001',
+                title: 'Primary Checking Account',
+                subtitle: 'Account ****1234',
+                description: 'Available Balance: $5,430.50',
+                category: 'accounts'
+            },
+            {
+                id: 'acc_002',
+                title: 'Business Savings Account', 
+                subtitle: 'Account ****5678',
+                description: 'Available Balance: $12,750.00',
+                category: 'accounts'
+            },
+            {
+                id: 'acc_003',
+                title: 'Investment Portfolio',
+                subtitle: 'Account ****9012',
+                description: 'Total Value: $45,230.75',
+                category: 'accounts'
+            },
+            {
+                id: 'txn_001',
+                title: 'Amazon Purchase',
+                subtitle: 'Dec 15, 2024 • 2:34 PM',
+                description: '-$89.99 • Debit Card Transaction',
+                category: 'transactions'
+            },
+            {
+                id: 'txn_002',
+                title: 'Salary Deposit',
+                subtitle: 'Dec 15, 2024 • 9:00 AM', 
+                description: '+$3,500.00 • Direct Deposit',
+                category: 'transactions'
+            },
+            {
+                id: 'txn_003',
+                title: 'Grocery Store',
+                subtitle: 'Dec 14, 2024 • 6:15 PM',
+                description: '-$127.45 • Debit Card',
+                category: 'transactions'
+            },
+            {
+                id: 'cust_001',
+                title: 'John Smith',
+                subtitle: 'Customer ID: 123456',
+                description: 'Premium Account Holder • Member since 2018',
+                category: 'customers'
+            },
+            {
+                id: 'cust_002',
+                title: 'Sarah Johnson',
+                subtitle: 'Customer ID: 789012',
+                description: 'Business Account Holder • Member since 2020',
+                category: 'customers'
+            }
+        ];
+
+        let activeIndex = -1;
+        let filteredResults = [];
+        let debounceTimer;
+        let currentConfig = {
+            maxResults: 8,
+            debounceTime: 300,
+            placeholder: "Search accounts, transactions, customers...",
+            clearable: true,
+            highlight: true
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainSearch = document.getElementById('main-search');
+            const clearBtn = document.getElementById('clear-btn');
+            const resultsDropdown = document.getElementById('results-dropdown');
+            
+            // Configuration controls
+            const clearableCheckbox = document.getElementById('clearable-checkbox');
+            const highlightCheckbox = document.getElementById('highlight-checkbox');
+
+            // Custom select functionality
+            setupCustomSelects();
+
+            // Configuration change handlers
+
+            clearableCheckbox.addEventListener('change', function() {
+                currentConfig.clearable = this.checked;
+                if (!this.checked) {
+                    clearBtn.style.display = 'none';
+                }
+                updateSettingsDisplay();
+            });
+
+            highlightCheckbox.addEventListener('change', function() {
+                currentConfig.highlight = this.checked;
+                updateSettingsDisplay();
+                // Re-perform search to update highlighting
+                if (mainSearch.value.length >= 2) {
+                    performSearch(mainSearch.value);
+                }
+            });
+
+            // Main search functionality
+            mainSearch.addEventListener('input', function(e) {
+                const value = e.target.value;
+                
+                // Show/hide clear button based on config
+                if (currentConfig.clearable) {
+                    clearBtn.style.display = value ? 'flex' : 'none';
+                }
+                
+                // Debounced search with configurable delay
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    performSearch(value);
+                }, currentConfig.debounceTime);
+            });
+
+            // Keyboard navigation
+            mainSearch.addEventListener('keydown', function(e) {
+                if (filteredResults.length === 0) return;
+
+                switch(e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        activeIndex = Math.min(activeIndex + 1, filteredResults.length - 1);
+                        updateActiveResult();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        activeIndex = Math.max(activeIndex - 1, -1);
+                        updateActiveResult();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (activeIndex >= 0) {
+                            selectResult(filteredResults[activeIndex]);
+                        }
+                        break;
+                    case 'Escape':
+                        hideResults();
+                        mainSearch.blur();
+                        break;
+                }
+            });
+
+            // Click outside to close
+            document.addEventListener('click', function(e) {
+                if (!mainSearch.contains(e.target) && !resultsDropdown.contains(e.target)) {
+                    hideResults();
+                }
+            });
+
+            // Initialize settings display
+            updateSettingsDisplay();
+        });
+
+        function performSearch(query) {
+            const resultsDropdown = document.getElementById('results-dropdown');
+            
+            if (query.length < 2) {
+                hideResults();
+                return;
+            }
+
+            // Filter results
+            filteredResults = bankingData.filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.subtitle.toLowerCase().includes(query.toLowerCase()) ||
+                item.description.toLowerCase().includes(query.toLowerCase())
+            );
+
+            // Apply max results limit
+            if (filteredResults.length > currentConfig.maxResults) {
+                filteredResults = filteredResults.slice(0, currentConfig.maxResults);
+            }
+
+            if (filteredResults.length > 0) {
+                showResults(filteredResults, query);
+            } else {
+                showNoResults();
+            }
+        }
+
+        function showResults(results, query) {
+            const resultsDropdown = document.getElementById('results-dropdown');
+            activeIndex = -1;
+            
+            resultsDropdown.innerHTML = results.map((item, index) => `
+                <div class="mock-result-item" onclick="selectResult(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <div class="mock-result-title">${currentConfig.highlight ? highlightText(item.title, query) : item.title}</div>
+                    <div class="mock-result-subtitle">${currentConfig.highlight ? highlightText(item.subtitle, query) : item.subtitle}</div>
+                    <div class="mock-result-description">${currentConfig.highlight ? highlightText(item.description, query) : item.description}</div>
+                    <span class="mock-result-category">${item.category}</span>
+                </div>
+            `).join('');
+            
+            resultsDropdown.style.display = 'block';
+        }
+
+        function showNoResults() {
+            const resultsDropdown = document.getElementById('results-dropdown');
+            resultsDropdown.innerHTML = `
+                <div class="mock-result-item" style="text-align: center; color: #666; font-style: italic;">
+                    No results found
+                </div>
+            `;
+            resultsDropdown.style.display = 'block';
+        }
+
+        function hideResults() {
+            const resultsDropdown = document.getElementById('results-dropdown');
+            resultsDropdown.style.display = 'none';
+            activeIndex = -1;
+        }
+
+        function updateActiveResult() {
+            const items = document.querySelectorAll('.mock-result-item');
+            const resultsDropdown = document.getElementById('results-dropdown');
+            
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === activeIndex);
+            });
+            
+            // Scroll active item into view within the dropdown container only
+            if (activeIndex >= 0 && items[activeIndex]) {
+                const activeItem = items[activeIndex];
+                const containerTop = resultsDropdown.scrollTop;
+                const containerBottom = containerTop + resultsDropdown.clientHeight;
+                const itemTop = activeItem.offsetTop;
+                const itemBottom = itemTop + activeItem.offsetHeight;
+                
+                // Check if item is above visible area
+                if (itemTop < containerTop) {
+                    resultsDropdown.scrollTop = itemTop;
+                }
+                // Check if item is below visible area
+                else if (itemBottom > containerBottom) {
+                    resultsDropdown.scrollTop = itemBottom - resultsDropdown.clientHeight;
+                }
+            }
+        }
+
+        function selectResult(result) {
+            const mainSearch = document.getElementById('main-search');
+            mainSearch.value = result.title;
+            hideResults();
+            
+            alert(`✅ Selected: ${result.title}\n📂 Category: ${result.category}\n📄 Description: ${result.description}`);
+        }
+
+        function clearSearch() {
+            const mainSearch = document.getElementById('main-search');
+            const clearBtn = document.getElementById('clear-btn');
+            mainSearch.value = '';
+            clearBtn.style.display = 'none';
+            hideResults();
+            mainSearch.focus();
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function setupCustomSelects() {
+            document.querySelectorAll('.custom-select').forEach(select => {
+                const trigger = select.querySelector('.select-trigger');
+                const options = select.querySelector('.select-options');
+                
+                trigger.addEventListener('click', () => {
+                    // Close other open selects
+                    document.querySelectorAll('.custom-select.open').forEach(openSelect => {
+                        if (openSelect !== select) {
+                            openSelect.classList.remove('open');
+                        }
+                    });
+                    
+                    select.classList.toggle('open');
+                });
+                
+                options.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('select-option')) {
+                        // Update active option
+                        options.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('active'));
+                        e.target.classList.add('active');
+                        
+                        // Update trigger text
+                        trigger.textContent = e.target.textContent;
+                        
+                        // Close dropdown
+                        select.classList.remove('open');
+                        
+                        // Handle configuration change
+                        const selectType = select.dataset.select;
+                        const value = e.target.dataset.value;
+                        
+                        switch(selectType) {
+                            case 'max-results':
+                                currentConfig.maxResults = parseInt(value);
+                                break;
+                            case 'debounce':
+                                currentConfig.debounceTime = parseInt(value);
+                                break;
+                            case 'placeholder':
+                                currentConfig.placeholder = value;
+                                document.getElementById('main-search').placeholder = value;
+                                break;
+                        }
+                        
+                        updateSettingsDisplay();
+                        
+                        // Re-perform search if needed
+                        if (selectType === 'placeholder' && document.getElementById('main-search').value.length >= 2) {
+                            performSearch(document.getElementById('main-search').value);
+                        }
+                    }
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-select')) {
+                    document.querySelectorAll('.custom-select.open').forEach(select => {
+                        select.classList.remove('open');
+                    });
+                }
+            });
+        }
+
+        function updateSettingsDisplay() {
+            const settingsDiv = document.getElementById('settings-display');
+            settingsDiv.innerHTML = `Max Results: ${currentConfig.maxResults} | Debounce: ${currentConfig.debounceTime}ms | Clearable: ${currentConfig.clearable ? '✓' : '✗'} | Highlight: ${currentConfig.highlight ? '✓' : '✗'}`;
+        }
+
+        let isDarkMode = false;
+
+        function toggleTheme() {
+            const container = document.querySelector('.demo-container');
+            const toggleBtn = document.getElementById('theme-toggle');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            
+            isDarkMode = !isDarkMode;
+            
+            if (isDarkMode) {
+                container.classList.add('dark-theme');
+                toggleBtn.classList.add('dark-active');
+                toggleIcon.textContent = '☀️';
+                toggleText.textContent = 'Light Mode';
+                document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+            } else {
+                container.classList.remove('dark-theme');
+                toggleBtn.classList.remove('dark-active');
+                toggleIcon.textContent = '🌙';
+                toggleText.textContent = 'Dark Mode';
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        }
+
+        console.log('🎨 Smart Search Mock Demo Loaded - No CORS issues!');
+    </script>
+</body>
+</html>

@@ -1,26 +1,41 @@
+# Build outputs
 dist/
 www/
 loader/
 
-*~
-*.sw[mnpcod]
+# Dependencies
+node_modules/
+
+# Coverage
+coverage/
+
+# StencilJS
+.stencil/
+
+# Logs
 *.log
-*.lock
+log.txt
+
+# Temporary files
 *.tmp
 *.tmp.*
-log.txt
-*.sublime-project
-*.sublime-workspace
+*~
 
-.stencil/
+# Cache
+.eslintcache
+
+# IDE files
 .idea/
 .vscode/
-.sass-cache/
-.versions/
-node_modules/
-$RECYCLE.BIN/
+*.sublime-project
+*.sublime-workspace
+*.sw[mnpcod]
 
+# OS files
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+$RECYCLE.BIN/
+
+# Environment
 .env

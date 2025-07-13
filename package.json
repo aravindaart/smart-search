@@ -1,6 +1,6 @@
 {
   "name": "@aravindaart/smart-search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Smart Search Web Component Library for Banking Applications",
   "type": "module",
   "main": "dist/index.cjs.js",

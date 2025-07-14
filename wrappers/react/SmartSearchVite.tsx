@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { defineCustomElements } from '@aravindaart/smart-search/loader';
 
 export interface SearchResult {
   id: string | number;
@@ -58,7 +57,7 @@ export interface SmartSearchRef {
   getValue: () => string;
 }
 
-export const SmartSearch = forwardRef<SmartSearchRef, SmartSearchProps>(({
+export const SmartSearchVite = forwardRef<SmartSearchRef, SmartSearchProps>(({
   placeholder = 'Search...',
   value = '',
   disabled = false,
@@ -87,6 +86,7 @@ export const SmartSearch = forwardRef<SmartSearchRef, SmartSearchProps>(({
 }, ref) => {
   const elementRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Expose imperative methods
   useImperativeHandle(ref, () => ({
@@ -117,15 +117,19 @@ export const SmartSearch = forwardRef<SmartSearchRef, SmartSearchProps>(({
     }
   }), []);
 
-  // Initialize custom elements
+  // Initialize custom elements with dynamic import to avoid Vite bundling issues
   useEffect(() => {
     const initializeComponent = async () => {
       try {
+        // Dynamic import to avoid Vite bundling conflicts
+        const { defineCustomElements } = await import('@aravindaart/smart-search/loader');
+        
         await defineCustomElements();
         await customElements.whenDefined('smart-search');
         setIsReady(true);
       } catch (error) {
         console.error('Failed to initialize SmartSearch component:', error);
+        setError('Failed to load search component. Please check your network connection.');
       }
     };
 
@@ -195,10 +199,23 @@ export const SmartSearch = forwardRef<SmartSearchRef, SmartSearchProps>(({
     };
   }, [isReady, onSearchInput, onSearchClear, onSearchFocus, onSearchBlur, onResultSelect, onResultHover]);
 
-  if (!isReady) {
-    return <div className={className} style={style}>Loading...</div>;
+  if (error) {
+    return (
+      <div className={className} style={{...style, padding: '10px', border: '1px solid #f5c6cb', backgroundColor: '#f8d7da', color: '#721c24', borderRadius: '4px'}}>
+        {error}
+      </div>
+    );
   }
 
+  if (!isReady) {
+    return (
+      <div className={className} style={{...style, padding: '10px', border: '1px solid #d1ecf1', backgroundColor: '#d1ecf1', color: '#0c5460', borderRadius: '4px'}}>
+        Loading search component...
+      </div>
+    );
+  }
+
+  // Use createElement to avoid JSX compilation issues with custom elements
   return React.createElement('smart-search', {
     ref: elementRef,
     placeholder,
@@ -221,6 +238,6 @@ export const SmartSearch = forwardRef<SmartSearchRef, SmartSearchProps>(({
   });
 });
 
-SmartSearch.displayName = 'SmartSearch';
+SmartSearchVite.displayName = 'SmartSearchVite';
 
-export default SmartSearch;
+export default SmartSearchVite;

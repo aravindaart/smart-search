@@ -37,14 +37,8 @@ npm install @aravindaart/smart-search
 
 **Framework Wrappers (Recommended):**
 ```bash
-# React
-npm install @aravindaart/smart-search-react
-
-# Angular 
-npm install @aravindaart/smart-search-angular
-
-# Vue 3
-npm install @aravindaart/smart-search-vue
+# All wrappers are included in the main package
+npm install @aravindaart/smart-search
 ```
 
 ### Basic Usage
@@ -53,9 +47,9 @@ npm install @aravindaart/smart-search-vue
 
 The framework wrappers provide native component APIs and eliminate the common issues with custom element integration. They handle initialization, event binding, and data management automatically.
 
-- **React users**: Use `@aravindaart/smart-search-react`
-- **Angular users**: Use `@aravindaart/smart-search-angular` 
-- **Vue users**: Use `@aravindaart/smart-search-vue`
+- **React users**: Use `@aravindaart/smart-search/react`
+- **Angular users**: Use `@aravindaart/smart-search/angular` 
+- **Vue users**: Use `@aravindaart/smart-search/vue`
 - **Vanilla JS/HTML users**: Use the core library directly
 
 #### Vanilla JavaScript / HTML
@@ -87,7 +81,7 @@ The framework wrappers provide native component APIs and eliminate the common is
 
 ```tsx
 import React, { useState } from 'react';
-import { SmartSearch } from '@aravindaart/smart-search-react';
+import { SmartSearch } from '@aravindaart/smart-search/react';
 
 function App() {
   const [searchData] = useState([
@@ -132,7 +126,7 @@ function App() {
 
 **Installation:**
 ```bash
-npm install @aravindaart/smart-search-react
+npm install @aravindaart/smart-search
 ```
 
 **Option 2: Direct Custom Element Usage**
@@ -276,7 +270,7 @@ export {};
 // app.module.ts
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { SmartSearchModule } from '@aravindaart/smart-search-angular';
+import { SmartSearchModule } from '@aravindaart/smart-search/angular';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -288,7 +282,7 @@ export class AppModule {}
 
 // app.component.ts
 import { Component } from '@angular/core';
-import { SearchInputEventDetail, SearchSelectEventDetail } from '@aravindaart/smart-search-angular';
+import { SearchInputEventDetail, SearchSelectEventDetail } from '@aravindaart/smart-search/angular';
 
 @Component({
   selector: 'app-root',
@@ -321,7 +315,7 @@ export class AppComponent {
 
 **Installation:**
 ```bash
-npm install @aravindaart/smart-search-angular
+npm install @aravindaart/smart-search
 ```
 
 **Option 2: Direct Custom Element Usage**
@@ -404,7 +398,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { SmartSearch } from '@aravindaart/smart-search-vue';
+import { SmartSearch } from '@aravindaart/smart-search/vue';
 
 const searchData = ref([
   { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
@@ -423,7 +417,7 @@ const onResultSelect = (event) => {
 
 **Installation:**
 ```bash
-npm install @aravindaart/smart-search-vue
+npm install @aravindaart/smart-search
 ```
 
 **Option 2: Direct Custom Element Usage**
@@ -521,17 +515,17 @@ onMounted(async () => {
 
 #### React Wrapper: Component not rendering
 - **Issue**: `<SmartSearch>` component doesn't appear
-- **Solution**: Ensure you're importing from `@aravindaart/smart-search-react`
-- **Check**: Make sure the wrapper package is installed: `npm list @aravindaart/smart-search-react`
+- **Solution**: Ensure you're importing from `@aravindaart/smart-search/react`
+- **Check**: Make sure the main package is installed: `npm list @aravindaart/smart-search`
 
 #### Angular Wrapper: Module not found
-- **Issue**: `Cannot find module '@aravindaart/smart-search-angular'`
+- **Issue**: `Cannot find module '@aravindaart/smart-search/angular'`
 - **Solution**: Import `SmartSearchModule` in your app module
-- **Check**: Verify installation: `npm list @aravindaart/smart-search-angular`
+- **Check**: Verify installation: `npm list @aravindaart/smart-search`
 
 #### Vue Wrapper: Component not registered
 - **Issue**: `Unknown custom element: <SmartSearch>`
-- **Solution**: Import the component: `import { SmartSearch } from '@aravindaart/smart-search-vue'`
+- **Solution**: Import the component: `import { SmartSearch } from '@aravindaart/smart-search/vue'`
 - **Check**: Use PascalCase component name in template
 
 #### Framework Wrapper Benefits
@@ -851,13 +845,13 @@ The library is optimized for tree shaking and offers multiple installation optio
 **Framework Wrappers (Recommended):**
 ```javascript
 // React - Native React component
-import { SmartSearch } from '@aravindaart/smart-search-react';
+import { SmartSearch } from '@aravindaart/smart-search/react';
 
 // Angular - Native Angular component
-import { SmartSearchModule } from '@aravindaart/smart-search-angular';
+import { SmartSearchModule } from '@aravindaart/smart-search/angular';
 
 // Vue - Native Vue component  
-import { SmartSearch } from '@aravindaart/smart-search-vue';
+import { SmartSearch } from '@aravindaart/smart-search/vue';
 ```
 
 **Direct Custom Elements:**

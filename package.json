@@ -1,6 +1,6 @@
 {
   "name": "@aravindaart/smart-search",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Smart Search Web Component Library for Banking Applications",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -24,6 +24,18 @@
     "./dist/custom-elements": {
       "import": "./dist/custom-elements/index.js",
       "types": "./dist/custom-elements/index.d.ts"
+    },
+    "./react": {
+      "import": "./wrappers/react/index.js",
+      "types": "./wrappers/react/index.d.ts"
+    },
+    "./angular": {
+      "import": "./wrappers/angular/index.js",
+      "types": "./wrappers/angular/index.d.ts"
+    },
+    "./vue": {
+      "import": "./wrappers/vue/index.js",
+      "types": "./wrappers/vue/index.d.ts"
     }
   },
   "repository": {
@@ -32,7 +44,8 @@
   },
   "files": [
     "dist/",
-    "loader/"
+    "loader/",
+    "wrappers/"
   ],
   "scripts": {
     "build": "npm run clean && npm run build:stencil",

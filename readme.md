@@ -151,6 +151,47 @@ function App() {
 }
 ```
 
+**Recommended Vite Configuration (vite.config.js):**
+```javascript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['@aravindaart/smart-search/loader']
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: undefined
+      }
+    }
+  }
+})
+```
+
+**TypeScript Support (src/vite-env.d.ts):**
+```typescript
+/// <reference types="vite/client" />
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'smart-search': any;
+      'smart-search-input': any;
+      'smart-search-results': any;
+    }
+  }
+}
+
+export {};
+```
+
 #### Angular
 
 ```typescript
@@ -370,6 +411,25 @@ useEffect(() => {
 - **Issue**: Search results not appearing
 - **Solution**: Ensure `dataSource` is set after component registration
 - **Check**: Data format matches `SearchResult[]` interface
+
+#### Vite: Module resolution issues
+- **Issue**: `global is not defined` or module resolution errors
+- **Solution**: Add proper Vite configuration in `vite.config.js`
+```javascript
+export default defineConfig({
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['@aravindaart/smart-search/loader']
+  }
+})
+```
+
+#### Vite: Build errors with StencilJS components
+- **Issue**: Build fails with StencilJS component imports
+- **Solution**: Configure Vite to handle the loader properly
+- **Check**: Use `/loader` import path, not `/dist/custom-elements`
 
 ## 📚 API Documentation
 

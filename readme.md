@@ -65,24 +65,57 @@ npm install @aravindaart/smart-search
 import React, { useState, useEffect, useRef } from 'react';
 import { defineCustomElements } from '@aravindaart/smart-search/loader';
 
+// TypeScript declaration for custom element
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'smart-search': any;
+    }
+  }
+}
+
 function App() {
   const searchRef = useRef<any>(null);
+  const [isComponentReady, setIsComponentReady] = useState(false);
   const [searchData] = useState([
-    { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
-    { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
+    { 
+      id: 1, 
+      title: 'Checking Account', 
+      subtitle: '****1234', 
+      description: 'Available Balance: $5,430.50',
+      category: 'accounts' 
+    },
+    { 
+      id: 2, 
+      title: 'Savings Account', 
+      subtitle: '****5678', 
+      description: 'Available Balance: $12,750.00',
+      category: 'accounts' 
+    }
   ]);
 
   useEffect(() => {
-    // Register custom elements
-    defineCustomElements();
+    // Register custom elements and wait for them to be defined
+    const initializeComponent = async () => {
+      await defineCustomElements();
+      // Wait for the component to be fully defined
+      await customElements.whenDefined('smart-search');
+      setIsComponentReady(true);
+    };
     
-    // Set data source after component is registered
-    if (searchRef.current) {
-      searchRef.current.dataSource = searchData;
-    }
-  }, [searchData]);
+    initializeComponent();
+  }, []);
 
   useEffect(() => {
+    // Set data source only after component is ready
+    if (isComponentReady && searchRef.current) {
+      searchRef.current.dataSource = searchData;
+    }
+  }, [isComponentReady, searchData]);
+
+  useEffect(() => {
+    if (!isComponentReady) return;
+    
     const searchElement = searchRef.current;
     if (!searchElement) return;
 
@@ -103,14 +136,16 @@ function App() {
       searchElement.removeEventListener('searchInput', handleSearch);
       searchElement.removeEventListener('resultSelect', handleSelect);
     };
-  }, []);
+  }, [isComponentReady]);
 
   return (
     <smart-search
       ref={searchRef}
       placeholder="Search accounts, transactions..."
       theme="light"
-      maxResults={10}
+      max-results="10"
+      debounce-time="300"
+      min-search-length="2"
     />
   );
 }
@@ -273,8 +308,9 @@ onMounted(async () => {
 
 #### React: Component not rendering
 - **Issue**: `<smart-search>` doesn't appear
-- **Solution**: Ensure `defineCustomElements()` is called before rendering
-- **Check**: Add `ref` and set `dataSource` programmatically
+- **Solution**: Wait for `customElements.whenDefined('smart-search')` before setting data
+- **Check**: Use kebab-case attributes (`max-results` not `maxResults`)
+- **Fix**: Add TypeScript declarations for custom elements
 
 #### Angular: Property binding errors  
 - **Issue**: `Can't bind to 'dataSource'`
@@ -297,6 +333,37 @@ declare global {
     }
   }
 }
+```
+
+#### React: Attributes not working
+- **Issue**: Component props like `maxResults` not working
+- **Solution**: Use kebab-case HTML attributes instead of camelCase props
+- **Examples**: 
+  - ✅ `max-results="10"` 
+  - ❌ `maxResults={10}`
+  - ✅ `debounce-time="300"`
+  - ❌ `debounceTime={300}`
+
+#### React: Data not loading
+- **Issue**: `dataSource` set but no results show
+- **Solution**: Ensure proper timing and data format
+```tsx
+// Wait for component to be ready
+useEffect(() => {
+  const init = async () => {
+    await defineCustomElements();
+    await customElements.whenDefined('smart-search');
+    setIsReady(true);
+  };
+  init();
+}, []);
+
+// Set data after component is ready
+useEffect(() => {
+  if (isReady && searchRef.current) {
+    searchRef.current.dataSource = data;
+  }
+}, [isReady, data]);
 ```
 
 #### Data not showing

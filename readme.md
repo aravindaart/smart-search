@@ -30,11 +30,33 @@ A comprehensive, accessible search component library built with StencilJS for ba
 
 ### Installation
 
+**Core Library:**
 ```bash
 npm install @aravindaart/smart-search
 ```
 
+**Framework Wrappers (Recommended):**
+```bash
+# React
+npm install @aravindaart/smart-search-react
+
+# Angular 
+npm install @aravindaart/smart-search-angular
+
+# Vue 3
+npm install @aravindaart/smart-search-vue
+```
+
 ### Basic Usage
+
+**🎯 Recommended Approach: Use Framework Wrappers**
+
+The framework wrappers provide native component APIs and eliminate the common issues with custom element integration. They handle initialization, event binding, and data management automatically.
+
+- **React users**: Use `@aravindaart/smart-search-react`
+- **Angular users**: Use `@aravindaart/smart-search-angular` 
+- **Vue users**: Use `@aravindaart/smart-search-vue`
+- **Vanilla JS/HTML users**: Use the core library directly
 
 #### Vanilla JavaScript / HTML
 
@@ -60,6 +82,60 @@ npm install @aravindaart/smart-search
 ```
 
 #### React
+
+**Option 1: Using the React Wrapper (Recommended)**
+
+```tsx
+import React, { useState } from 'react';
+import { SmartSearch } from '@aravindaart/smart-search-react';
+
+function App() {
+  const [searchData] = useState([
+    { 
+      id: 1, 
+      title: 'Checking Account', 
+      subtitle: '****1234', 
+      description: 'Available Balance: $5,430.50',
+      category: 'accounts' 
+    },
+    { 
+      id: 2, 
+      title: 'Savings Account', 
+      subtitle: '****5678', 
+      description: 'Available Balance: $12,750.00',
+      category: 'accounts' 
+    }
+  ]);
+
+  const handleSearch = (event) => {
+    console.log('Search query:', event.query);
+  };
+
+  const handleSelect = (event) => {
+    console.log('Selected:', event.result);
+  };
+
+  return (
+    <SmartSearch
+      placeholder="Search accounts, transactions..."
+      theme="light"
+      maxResults={10}
+      debounceTime={300}
+      minSearchLength={2}
+      dataSource={searchData}
+      onSearchInput={handleSearch}
+      onResultSelect={handleSelect}
+    />
+  );
+}
+```
+
+**Installation:**
+```bash
+npm install @aravindaart/smart-search-react
+```
+
+**Option 2: Direct Custom Element Usage**
 
 ```tsx
 import React, { useState, useEffect, useRef } from 'react';
@@ -194,6 +270,62 @@ export {};
 
 #### Angular
 
+**Option 1: Using the Angular Wrapper (Recommended)**
+
+```typescript
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { SmartSearchModule } from '@aravindaart/smart-search-angular';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, SmartSearchModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+// app.component.ts
+import { Component } from '@angular/core';
+import { SearchInputEventDetail, SearchSelectEventDetail } from '@aravindaart/smart-search-angular';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <smart-search
+      placeholder="Search accounts, transactions..."
+      theme="light"
+      [maxResults]="10"
+      [dataSource]="searchData"
+      (searchInput)="onSearchInput($event)"
+      (resultSelect)="onResultSelect($event)">
+    </smart-search>
+  `
+})
+export class AppComponent {
+  searchData = [
+    { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
+    { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
+  ];
+
+  onSearchInput(event: SearchInputEventDetail) {
+    console.log('Search query:', event.query);
+  }
+
+  onResultSelect(event: SearchSelectEventDetail) {
+    console.log('Selected:', event.result);
+  }
+}
+```
+
+**Installation:**
+```bash
+npm install @aravindaart/smart-search-angular
+```
+
+**Option 2: Direct Custom Element Usage**
+
 ```typescript
 // app.module.ts
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -255,6 +387,46 @@ export class AppComponent implements OnInit, AfterViewInit {
 ```
 
 #### Vue 3
+
+**Option 1: Using the Vue Wrapper (Recommended)**
+
+```vue
+<template>
+  <SmartSearch
+    placeholder="Search accounts, transactions..."
+    theme="light"
+    :maxResults="10"
+    :dataSource="searchData"
+    @searchInput="onSearchInput"
+    @resultSelect="onResultSelect"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { SmartSearch } from '@aravindaart/smart-search-vue';
+
+const searchData = ref([
+  { id: 1, title: 'Checking Account', subtitle: '****1234', category: 'accounts' },
+  { id: 2, title: 'Savings Account', subtitle: '****5678', category: 'accounts' }
+]);
+
+const onSearchInput = (event) => {
+  console.log('Search query:', event.query);
+};
+
+const onResultSelect = (event) => {
+  console.log('Selected:', event.result);
+};
+</script>
+```
+
+**Installation:**
+```bash
+npm install @aravindaart/smart-search-vue
+```
+
+**Option 2: Direct Custom Element Usage**
 
 ```vue
 <template>
@@ -345,7 +517,31 @@ onMounted(async () => {
 
 ## 🔧 Troubleshooting
 
-### Common Issues
+### Framework Wrapper Issues
+
+#### React Wrapper: Component not rendering
+- **Issue**: `<SmartSearch>` component doesn't appear
+- **Solution**: Ensure you're importing from `@aravindaart/smart-search-react`
+- **Check**: Make sure the wrapper package is installed: `npm list @aravindaart/smart-search-react`
+
+#### Angular Wrapper: Module not found
+- **Issue**: `Cannot find module '@aravindaart/smart-search-angular'`
+- **Solution**: Import `SmartSearchModule` in your app module
+- **Check**: Verify installation: `npm list @aravindaart/smart-search-angular`
+
+#### Vue Wrapper: Component not registered
+- **Issue**: `Unknown custom element: <SmartSearch>`
+- **Solution**: Import the component: `import { SmartSearch } from '@aravindaart/smart-search-vue'`
+- **Check**: Use PascalCase component name in template
+
+#### Framework Wrapper Benefits
+✅ **No manual component registration**  
+✅ **No custom element timing issues**  
+✅ **Native TypeScript support**  
+✅ **Framework-specific event handling**  
+✅ **Proper prop/attribute binding**
+
+### Common Issues (Direct Custom Element Usage)
 
 #### React: Component not rendering
 - **Issue**: `<smart-search>` doesn't appear
@@ -650,8 +846,21 @@ npm run lint:fix
 
 ## 📦 Bundle Analysis
 
-The library is optimized for tree shaking:
+The library is optimized for tree shaking and offers multiple installation options:
 
+**Framework Wrappers (Recommended):**
+```javascript
+// React - Native React component
+import { SmartSearch } from '@aravindaart/smart-search-react';
+
+// Angular - Native Angular component
+import { SmartSearchModule } from '@aravindaart/smart-search-angular';
+
+// Vue - Native Vue component  
+import { SmartSearch } from '@aravindaart/smart-search-vue';
+```
+
+**Direct Custom Elements:**
 ```javascript
 // Import only what you need
 import { SmartSearchInput } from '@aravindaart/smart-search';
@@ -660,6 +869,12 @@ import { SmartSearchInput } from '@aravindaart/smart-search';
 import { defineCustomElements } from '@aravindaart/smart-search/loader';
 defineCustomElements();
 ```
+
+**Bundle Sizes:**
+- Core library: ~85KB gzipped
+- React wrapper: ~5KB additional
+- Angular wrapper: ~7KB additional  
+- Vue wrapper: ~4KB additional
 
 ## 🌐 Browser Support
 

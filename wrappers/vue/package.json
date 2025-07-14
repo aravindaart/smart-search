@@ -1,0 +1,21 @@
+{
+  "name": "@aravindaart/smart-search-vue",
+  "version": "1.0.0",
+  "description": "Vue wrapper for Smart Search components",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "peerDependencies": {
+    "vue": ">=3.0.0",
+    "@aravindaart/smart-search": "^1.1.0"
+  },
+  "keywords": [
+    "vue",
+    "search",
+    "components",
+    "stencil",
+    "banking"
+  ],
+  "author": "Aravind",
+  "license": "MIT"
+}

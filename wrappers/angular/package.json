@@ -1,0 +1,22 @@
+{
+  "name": "@aravindaart/smart-search-angular",
+  "version": "1.0.0",
+  "description": "Angular wrapper for Smart Search components",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "peerDependencies": {
+    "@angular/core": ">=12.0.0",
+    "@angular/common": ">=12.0.0",
+    "@aravindaart/smart-search": "^1.1.0"
+  },
+  "keywords": [
+    "angular",
+    "search",
+    "components",
+    "stencil",
+    "banking"
+  ],
+  "author": "Aravind",
+  "license": "MIT"
+}

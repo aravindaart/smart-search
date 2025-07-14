@@ -1,0 +1,21 @@
+{
+  "name": "@aravindaart/smart-search-react",
+  "version": "1.0.0",
+  "description": "React wrapper for Smart Search components",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "@aravindaart/smart-search": "^1.1.0"
+  },
+  "keywords": [
+    "react",
+    "search",
+    "components",
+    "stencil",
+    "banking"
+  ],
+  "author": "Aravind",
+  "license": "MIT"
+}

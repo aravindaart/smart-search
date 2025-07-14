@@ -222,6 +222,8 @@ function App() {
 ```
 
 **Recommended Vite Configuration (vite.config.js):**
+
+For React Wrapper (Recommended):
 ```javascript
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -232,7 +234,27 @@ export default defineConfig({
     global: 'globalThis',
   },
   optimizeDeps: {
-    include: ['@aravindaart/smart-search/loader']
+    include: ['@aravindaart/smart-search/react'],
+    exclude: ['@aravindaart/smart-search/loader']
+  }
+})
+```
+
+For Direct Custom Element Usage:
+```javascript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    exclude: [
+      '@aravindaart/smart-search/loader',
+      '@aravindaart/smart-search/dist/custom-elements'
+    ]
   },
   build: {
     rollupOptions: {
@@ -611,15 +633,31 @@ export default defineConfig({
     global: 'globalThis',
   },
   optimizeDeps: {
-    include: ['@aravindaart/smart-search/loader']
+    exclude: ['@aravindaart/smart-search/loader']
   }
 })
 ```
+
+#### Vite: "smart-search.entry.js" file not found error
+- **Issue**: `The file does not exist at "node_modules/.vite/deps/smart-search.entry.js"`
+- **Solution**: Exclude StencilJS components from Vite optimization
+```javascript
+export default defineConfig({
+  optimizeDeps: {
+    exclude: [
+      '@aravindaart/smart-search/loader',
+      '@aravindaart/smart-search/dist/custom-elements'
+    ]
+  }
+})
+```
+- **Better Solution**: Use the React wrapper instead: `import { SmartSearch } from '@aravindaart/smart-search/react'`
 
 #### Vite: Build errors with StencilJS components
 - **Issue**: Build fails with StencilJS component imports
 - **Solution**: Configure Vite to handle the loader properly
 - **Check**: Use `/loader` import path, not `/dist/custom-elements`
+- **Recommended**: Switch to framework wrappers to avoid these issues entirely
 
 ## 📚 API Documentation
 
